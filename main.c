@@ -3,6 +3,11 @@
 
 #define MAX_SIZE 15
 
+typedef struct{
+    int row;
+    int col;
+}LOC;
+
 void PrintSquare(int square[][MAX_SIZE], int size){
     int row, col;
     printf("Print Magic Square!\n\n");
@@ -13,8 +18,24 @@ void PrintSquare(int square[][MAX_SIZE], int size){
     }
 }
 
-void FillSquare(int square[][MAX_SIZE], int size){
+void FillSquare(int square[][MAX_SIZE], int size, int curNum, LOC curLoc){//find next location to fill compared with curLoc and fill the curNum.
+    if(curNum == (size * size) + 1){
+        return;
+    }
     
+    
+    
+    else{
+        curLoc.row = ((curLoc.row - 1) < 0) ? (size - 1) : (curLoc.row - 1);
+        curLoc.col = ((curLoc.col - 1) < 0) ? (size - 1) : (curLoc.col - 1);
+        if(square[curLoc.row][curLoc.col]){//occupied.
+            curLoc.row = (curLoc.row + 2) % size;
+            curLoc.col = (curLoc.col + 1) % size;
+        }
+        square[curLoc.row][curLoc.col] = curNum;
+        FillSquare(square, size, curNum + 1, curLoc);
+        
+    }
 }
 
 void InitSquare(int square[][MAX_SIZE], int size){
@@ -69,10 +90,14 @@ int GetSquareSizeByUser(){
 int main(){
     int square[MAX_SIZE][MAX_SIZE];
     int size;
+    LOC curLoc;
     
     size = GetSquareSizeByUser();
     InitSquare(square, size);
-    FillSquare(square, size);
+    curLoc.row = 0;
+    curLoc.col = (size - 1)/2;
+    square[curLoc.row][curLoc.col] = 1;
+    FillSquare(square, size, 2, curLoc);
     PrintSquare(square, size);
     
     
